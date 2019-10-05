@@ -67,3 +67,75 @@ function ParentComponent() {
 
 export default ParentComponent;
 ```
+
+## Examples
+
+### Using two or more hooks with `hocify`
+
+The following example shows how you can use two hooks with `hocify`. Note that it's better to create a combined custom hook over creatitng multiple HOCs.
+
+```js
+import React from 'react';
+import hocify from 'hocify';
+import useHookOne from './useHookOne';
+import useHookTwo from './useHookTwo';
+
+const withHooks = hocify(() => {
+  const one = useHookOne();
+  const two = useHookTwo();
+  
+  return { one, two };
+});
+
+class ClassComponent extends React.Component {
+  // ... 
+}
+
+export default withHooks(ClassComponent);
+```
+
+### Reacting to prop changes
+
+The following example shows how you can use `props` in `hocify(props => ` to react to prop changes. There is a `useEffect` in our example hook that will re-run if the `id` changes.
+
+`useFetchMovie.js`
+
+```js
+function useFetchMovie(id) {
+  const [movie, setMovie] = useState(null);
+  
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch(`/api/movies/${id}`);
+      const movie = await response.json();
+      setMovie(movie);
+    }
+    
+    getData();
+  }, [id]);
+  
+  return movie;
+}
+```
+
+`MyComponent.js`
+
+```js
+import React, { useState } from 'react';
+import useFetchMovie from './useFetchMovie';
+
+const withFetchMovie = hocify(props => {
+  const movie = useFetchMovie(props.id);
+  return { movie };
+});
+
+class MyComponent extends React.Component {
+  render() {
+    const { movie } = this.props;
+    
+    // ...
+  }
+}
+
+export default withFetchMovie(MyComponent);
+```
