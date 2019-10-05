@@ -1,11 +1,12 @@
 {
   "name": "hocify",
-  "version": "0.0.0-alpha.1",
+  "version": "0.0.0-alpha.2",
   "description": "A function that turns React hooks into HOCs for compatibility with class components",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node ./scripts/build.js"
+    "build": "npx jest && node ./scripts/build.js",
+    "publish": "npm run build && cd build && npm publish && cd .."
   },
   "repository": {
     "type": "git",
@@ -56,5 +57,6 @@
   },
   "peerDependencies": {
     "react": "^16.8.0"
-  }
+  },
+  "private": true
 }
