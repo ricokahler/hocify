@@ -1,0 +1,23 @@
+{
+  "name": "hocify",
+  "version": "0.0.0-alpha.1",
+  "description": "A function that turns React hooks into HOCs for compatibility with class components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricokahler/hocify.git"
+  },
+  "keywords": [
+    "react",
+    "react-hooks"
+  ],
+  "author": "Rico Kahler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ricokahler/hocify/issues"
+  },
+  "homepage": "https://github.com/ricokahler/hocify#readme"
+}
