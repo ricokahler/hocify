@@ -16,7 +16,7 @@ function hocify(useHook) {
       return <Component {...results} {...props} ref={ref} />;
     });
 
-    WithHook.displayName = `hocify(${Component.displayName || Component.name || 'Component'})`;
+    WithHook.displayName = `hocify(${Component.displayName || Component.name})`;
 
     return WithHook;
   }
