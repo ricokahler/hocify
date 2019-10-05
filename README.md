@@ -25,8 +25,10 @@ npm install --save hocify
 ⚠️️ There are a few things to note ️️️️️️⚠️:
 
 1. The function you feed into `hocify` is a hook and thus **must follow [the rules of hooks](https://reactjs.org/docs/hooks-rules.html)**
-2. The arguments to this hook are the props of the wrapped component. You can write a hook function inline that picks off of these props to use an inputs to other hooks.
+2. The arguments to this hook are the props of the wrapped component. You can write a hook inline to `hocify` that uses these props as an input to other hooks.
 3. The resulting inline hook **must** return an object OR `null`. This will be spread onto the input component.
+
+`ExampleComponent.js`
 
 ```js
 import React from 'react';
@@ -42,11 +44,26 @@ const withMyCustomHook = hocify(props => {
   return { data: result };
 });
 
-class SomeClassComponent extends React.Component {
+class ExampleComponent extends React.Component {
   render() {
     const { data } = this.props;
   }
 }
 
-export default withMyCustomHook(SomeClassComponent);
+export default withMyCustomHook(ExampleComponent);
+```
+
+`ParentComponent.js`
+
+```js
+import React from 'react';
+import ExampleComponent from './ExampleComponent';
+
+function ParentComponent() {
+  // these props are the arguments to the inline hook in the `hocify` call above
+  //                        👇👇👇
+  return <ExampleComponent inputValue="test" anotherProp={5} />;
+}
+
+export default ParentComponent;
 ```
