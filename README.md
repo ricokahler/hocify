@@ -26,7 +26,7 @@ npm install --save hocify
 
 1. The function you feed into `hocify` is a hook and thus **must follow [the rules of hooks](https://reactjs.org/docs/hooks-rules.html)**
 2. The arguments to this hook are the props of the wrapped component. You can write a hook inline to `hocify` that uses these props as an input to other hooks.
-3. The resulting inline hook **must** return an object OR `null`. This will be spread onto the input component.
+3. The resulting inline hook **must** return an object OR `null`. This object will be spread onto the input component as props.
 
 `ExampleComponent.js`
 
