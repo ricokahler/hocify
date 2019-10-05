@@ -22,7 +22,7 @@ npm install --save hocify
 
 `hocify` is a function that takes in a custom hook and returns an HOC.
 
-⚠️️ There are a few things to note ️️️️️️⚠️:
+**⚠️️ There are a few things to note ️️️️️️⚠️**
 
 1. The function you feed into `hocify` is a hook and thus **must follow [the rules of hooks](https://reactjs.org/docs/hooks-rules.html)**
 2. The arguments to this hook are the props of the wrapped component. You can write a hook inline to `hocify` that uses these props as an input to other hooks.
