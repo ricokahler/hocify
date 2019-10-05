@@ -55,6 +55,7 @@ async function build() {
   if (!args.includes('--no-clean')) {
     console.log('Cleaning…');
     await execute('rm -rf node_modules build && npm i');
+    await execute('mkdir build');
   }
 
   console.log('Copying typings (rsync)…');
