@@ -4,8 +4,8 @@
   "description": "A function that turns React hooks into HOCs for compatibility with class components",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx jest && node ./scripts/build.js",
+    "test": "eslint src && jest --coverage --coverageReporters=text-lcov | coveralls",
+    "build": "eslint src && npx jest && node ./scripts/build.js",
     "publish": "npm run build && cd build && npm publish && cd .."
   },
   "repository": {
