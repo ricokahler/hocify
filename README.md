@@ -8,7 +8,7 @@
 
 This is unfortunate because it prevents us from using newer hook-based modules in our older class-based components.
 
-This library aims to soften that burden by giving you a reusable tool to convert some hooks into higher order components.
+This library aims to soften that prerequisite by giving you a reusable tool to convert some hooks into higher-order components.
 
 > **Disclaimer:** The purpose of "using hooks" within class components is more for compatibility of newer hook-based modules with older class-based components. If your component is already implemented as a function, then use the hook directly. If you're writing a new component, try writing it as a function component.
 
