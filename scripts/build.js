@@ -70,6 +70,10 @@ async function build() {
   console.log('Writing package.json…');
   await createPackageJson();
 
+  console.log('Copying README.md…');
+  const readme = await readFile(path.resolve(root, './README.md'));
+  await writeFile(path.resolve(root, './build/README.md'), readme);
+
   console.log('Done building!');
 }
 
