@@ -142,6 +142,31 @@ it('forwards the ref', async () => {
   expect(ref.current).toBeInstanceOf(ExampleComponent);
 });
 
+it('skips the object check in production mode', () => {
+  const nodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+
+  function useExampleHook() {
+    return undefined;
+  }
+
+  const withExampleHook = hocify(useExampleHook);
+
+  class ExampleComponent extends React.Component {
+    render() {
+      return null;
+    }
+  }
+
+  const Wrapped = withExampleHook(ExampleComponent);
+
+  act(() => {
+    create(<Wrapped />);
+  });
+
+  process.env.NODE_ENV = nodeEnv;
+});
+
 class DeferredPromise {
   constructor() {
     this.state = 'pending';
