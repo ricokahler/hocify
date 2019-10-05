@@ -1,6 +1,6 @@
 {
   "name": "hocify",
-  "version": "0.1.0-alpha.2",
+  "version": "1.0.0",
   "description": "A function that turns React hooks into HOCs for compatibility with class components",
   "main": "index.js",
   "scripts": {
