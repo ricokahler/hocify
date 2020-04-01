@@ -43,7 +43,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "jest": "^24.9.0",
+    "jest": "^25.2.4",
     "node-fetch": "^2.6.0",
     "prettier": "^1.18.2",
     "react": "^16.12.0",
