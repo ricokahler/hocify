@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useCallback, createRef } from 'react';
 import { act, create } from 'react-test-renderer';
-import hocify from './hocify';
+import hocify from './';
+
+function createDeferredPromise<T>() {
+  let resolve!: (t?: T) => void;
+  let reject!: (e?: any) => void;
+
+  const promise = new Promise<T>((thisResolve, thisReject) => {
+    resolve = thisResolve;
+    reject = thisReject;
+  });
+
+  return Object.assign(promise, {resolve, reject});
+}
 
 it('takes in a function that takes in a hook. the arguments of the hook are the props of the resulting HOC', async () => {
-  const done = new DeferredPromise();
+  const done = createDeferredPromise();
   const effectHandler = jest.fn();
 
-  function useCounter(initialCount) {
+  function useCounter(initialCount: number) {
     const [count, setCount] = useState(initialCount);
 
     const inc = useCallback(() => setCount(count => count + 1), []);
@@ -15,10 +27,18 @@ it('takes in a function that takes in a hook. the arguments of the hook are the 
     return { count, inc, dec };
   }
 
-  const withCounter = hocify(props => useCounter(props.initCount));
+  interface Props {
+    initCount: number;
+    count: number;
+    inc: () => void;
+    dec: () => void
+  }
 
-  function SomeComponent(props) {
+  const withCounter = hocify((props: Props) => useCounter(props.initCount));
+
+  function SomeComponent(props: Props) {
     const { inc, count } = props;
+
     useEffect(() => {
       inc();
     }, [inc]);
@@ -65,7 +85,7 @@ it('takes in a function that takes in a hook. the arguments of the hook are the 
 
 it('throws if the hook does not return an object', async () => {
   const errorHandler = jest.fn();
-  const done = new DeferredPromise();
+  const done = createDeferredPromise()
 
   function useExampleHook() {
     return 'not an object';
@@ -79,12 +99,13 @@ it('throws if the hook does not return an object', async () => {
     }
   }
 
+  // @ts-ignore
   const Wrapped = withExampleHook(ExampleComponent);
 
   class ErrorBoundary extends React.Component {
     state = { hadError: false };
 
-    componentDidCatch(e) {
+    componentDidCatch(e: Error) {
       errorHandler(e);
       done.resolve();
     }
@@ -131,11 +152,13 @@ it('forwards the ref', async () => {
     }
   }
 
+  // @ts-ignore
   const Wrapped = withExampleHook(ExampleComponent);
 
   const ref = createRef();
 
   act(() => {
+    // @ts-ignore
     create(<Wrapped ref={ref} />);
   });
 
@@ -158,6 +181,7 @@ it('skips the object check in production mode', () => {
     }
   }
 
+  // @ts-ignore
   const Wrapped = withExampleHook(ExampleComponent);
 
   act(() => {
@@ -167,24 +191,3 @@ it('skips the object check in production mode', () => {
   process.env.NODE_ENV = nodeEnv;
 });
 
-class DeferredPromise {
-  constructor() {
-    this.state = 'pending';
-    this._promise = new Promise((resolve, reject) => {
-      this.resolve = value => {
-        this.state = 'fulfilled';
-        resolve(value);
-      };
-      this.reject = reason => {
-        this.state = 'rejected';
-        reject(reason);
-      };
-    });
-
-    this.then = this._promise.then.bind(this._promise);
-    this.catch = this._promise.catch.bind(this._promise);
-    this.finally = this._promise.finally.bind(this._promise);
-  }
-
-  [Symbol.toStringTag] = 'Promise';
-}

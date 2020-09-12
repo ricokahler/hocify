@@ -1,33 +1,13 @@
-/* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
-const { promisify } = require('util');
-const { exec } = require('child_process');
-
-const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
+const exec = require('@ricokahler/exec');
 
 const root = path.resolve(__dirname, '../');
 
-const args = process.argv.slice(2);
-
-function execute(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (err, stdout, stderr) => {
-      console.log(stdout);
-      console.error(stderr);
-
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
 async function createPackageJson() {
-  const packageBuffer = await readFile(path.resolve(root, './package.json'));
+  const packageBuffer = await fs.promises.readFile(
+    path.resolve(root, './package.json')
+  );
   const packageJson = JSON.parse(packageBuffer.toString());
 
   const minimalPackage = {
@@ -45,41 +25,37 @@ async function createPackageJson() {
     main: packageJson.main,
   };
 
-  await writeFile(
-    path.resolve(root, './build/package.json'),
-    JSON.stringify(minimalPackage, null, 2),
+  await fs.promises.writeFile(
+    path.resolve(root, './dist/package.json'),
+    JSON.stringify(minimalPackage, null, 2)
   );
 }
 
 async function build() {
-  if (!args.includes('--no-clean')) {
-    console.log('Cleaning…');
-    await execute('rm -rf node_modules build && npm i');
-    await execute('mkdir build');
-  }
+  console.log('Cleaning…');
+  await exec('rm -rf node_modules dist');
+  await exec('npm i');
+  await exec('mkdir dist');
 
-  console.log('Copying typings (rsync)…');
-  await execute('rsync -r --include "*.d.ts" --include "*/" --exclude="*" --quiet ./src/* ./build');
+  console.log('Copying types…');
+  await exec('cp index.d.ts ./dist');
 
-  console.log('Checking Types (tsc)…');
-  await execute('npx tsc');
-
-  console.log('Compiling (webpack)…');
-  await execute('npx webpack -p');
+  console.log('Compiling…');
+  await exec('npx rollup -c');
 
   console.log('Writing package.json…');
   await createPackageJson();
 
   console.log('Copying README.md…');
-  const readme = await readFile(path.resolve(root, './README.md'));
-  await writeFile(path.resolve(root, './build/README.md'), readme);
+  const readme = await fs.promises.readFile(path.resolve(root, './README.md'));
+  await fs.promises.writeFile(path.resolve(root, './dist/README.md'), readme);
 
   console.log('Done building!');
 }
 
 build()
   .then(() => process.exit(0))
-  .catch(err => {
+  .catch((err) => {
     console.error(err);
     process.exit(1);
   });

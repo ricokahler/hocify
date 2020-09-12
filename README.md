@@ -35,14 +35,17 @@ import React from 'react';
 import hocify from 'hocify';
 import useMyCustomHook from './useMyCustomHook';
 
-// 1) this function must follow the rules of hooks
-// 2) `props` are the outer props of this function
-const withMyCustomHook = hocify(props => {
+// 1) create a custom hook to feed into HOCify.
+// note: it's nice to have this top-level for the hooks linter to work correctly
+// `props` are the incoming props of the resulting component
+const useHocify = props => {
   const result = useMyCustomHook(props.inputValue);
 
   // 3) the resulting hook _must_ return an object OR `null`.
   return { data: result };
-});
+};
+
+const withMyCustomHook = hocify(useHocify);
 
 class ExampleComponent extends React.Component {
   render() {
@@ -83,12 +86,12 @@ import useHookTwo from './useHookTwo';
 const withHooks = hocify(() => {
   const one = useHookOne();
   const two = useHookTwo();
-  
+
   return { one, two };
 });
 
 class ClassComponent extends React.Component {
-  // ... 
+  // ...
 }
 
 export default withHooks(ClassComponent);
@@ -96,24 +99,24 @@ export default withHooks(ClassComponent);
 
 ### Reacting to prop changes
 
-The following example shows how you can use `props` in `hocify(props => ` to react to prop changes. There is a `useEffect` in our example hook that will re-run if the `id` changes.
+The following example shows how you can use `props` in `hocify(props =>` to react to prop changes. There is a `useEffect` in our example hook that will re-run if the `id` changes.
 
 `useFetchMovie.js`
 
 ```js
 function useFetchMovie(id) {
   const [movie, setMovie] = useState(null);
-  
+
   useEffect(() => {
     async function getData() {
       const response = await fetch(`/api/movies/${id}`);
       const movie = await response.json();
       setMovie(movie);
     }
-    
+
     getData();
   }, [id]);
-  
+
   return movie;
 }
 ```
@@ -132,7 +135,7 @@ const withFetchMovie = hocify(props => {
 class MyComponent extends React.Component {
   render() {
     const { movie } = this.props;
-    
+
     // ...
   }
 }

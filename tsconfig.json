@@ -1,26 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNEXT",
+    "target": "esnext",
     "module": "commonjs",
     "jsx": "react",
-    "declaration": true,
-    "strict": true,
-    "baseUrl": ".",
     "noEmit": true,
-    "paths": {
-      "@sift/resift": ["src/index.ts"]
-    },
+    "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
-  },
-  "include": ["./src/**/*"],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.spec.js",
-    "**/*.test.ts",
-    "**/*.types-test.ts",
-    "**/*.types-test.tsx",
-    "**/*.test.js"
-  ]
+  }
 }
