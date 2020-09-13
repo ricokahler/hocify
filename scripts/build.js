@@ -22,7 +22,9 @@ async function createPackageJson() {
     peerDependencies: packageJson.peerDependencies,
     dependencies: packageJson.dependencies,
     name: 'hocify',
-    main: packageJson.main,
+    main: 'index.js',
+    module: 'index.esm.js',
+    sideEffects: false,
   };
 
   await fs.promises.writeFile(

@@ -55,5 +55,8 @@
   "peerDependencies": {
     "react": "^16.8.0"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@babel/runtime": "^7.11.2"
+  }
 }
