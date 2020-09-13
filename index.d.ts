@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 
 declare function hocify<HookResult>(
-  hook: (props: any) => HookResult,
+  hook: (props: any) => HookResult
 ): <Props extends HookResult>(
-  Component: React.ComponentType<Props & HookResult>,
+  Component: React.ComponentType<Props & HookResult>
 ) => React.ComponentType<Omit<Props, keyof HookResult>>;
 
 export default hocify;

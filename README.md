@@ -1,4 +1,4 @@
-# HOCify · [![Build Status](https://travis-ci.org/ricokahler/hocify.svg?branch=master)](https://travis-ci.org/ricokahler/hocify) [![Coverage Status](https://coveralls.io/repos/github/ricokahler/hocify/badge.svg?branch=master)](https://coveralls.io/github/ricokahler/hocify?branch=master)
+# HOCify · [![codecov](https://codecov.io/gh/ricokahler/hocify/branch/master/graph/badge.svg)](https://codecov.io/gh/ricokahler/hocify) [![bundlephobia](https://badgen.net/bundlephobia/minzip/hocify)](https://bundlephobia.com/result?p=hocify)
 
 > HOCify (H-oh-see-ify) is a simple library that converts hooks to [HOCs](https://reactjs.org/docs/higher-order-components.html) for compatibility with class-based components.
 
@@ -35,14 +35,17 @@ import React from 'react';
 import hocify from 'hocify';
 import useMyCustomHook from './useMyCustomHook';
 
-// 1) this function must follow the rules of hooks
-// 2) `props` are the outer props of this function
-const withMyCustomHook = hocify(props => {
+// 1) create a custom hook to feed into HOCify.
+// note: it's nice to have this top-level for the hooks linter to work correctly
+// `props` are the incoming props of the resulting component
+const useHocify = (props) => {
   const result = useMyCustomHook(props.inputValue);
 
   // 3) the resulting hook _must_ return an object OR `null`.
   return { data: result };
-});
+};
+
+const withMyCustomHook = hocify(useHocify);
 
 class ExampleComponent extends React.Component {
   render() {
@@ -72,7 +75,7 @@ export default ParentComponent;
 
 ### Using two or more hooks with `hocify`
 
-The following example shows how you can use two hooks with `hocify`. Note that it's better to create a combined custom hook over creatitng multiple HOCs.
+The following example shows how you can use two hooks with `hocify`. Note that it's better to create a combined custom hook over creating multiple HOCs.
 
 ```js
 import React from 'react';
@@ -80,15 +83,18 @@ import hocify from 'hocify';
 import useHookOne from './useHookOne';
 import useHookTwo from './useHookTwo';
 
-const withHooks = hocify(() => {
+const useHocify = () => {
   const one = useHookOne();
   const two = useHookTwo();
-  
+
   return { one, two };
-});
+};
+
+// only create one HOC
+const withHooks = hocify(useHocify);
 
 class ClassComponent extends React.Component {
-  // ... 
+  // ...
 }
 
 export default withHooks(ClassComponent);
@@ -96,24 +102,24 @@ export default withHooks(ClassComponent);
 
 ### Reacting to prop changes
 
-The following example shows how you can use `props` in `hocify(props => ` to react to prop changes. There is a `useEffect` in our example hook that will re-run if the `id` changes.
+The following example shows how you can use `props` in `hocify(props =>` to react to prop changes. There is a `useEffect` in our example hook that will re-run if the `id` changes.
 
 `useFetchMovie.js`
 
 ```js
 function useFetchMovie(id) {
   const [movie, setMovie] = useState(null);
-  
+
   useEffect(() => {
     async function getData() {
       const response = await fetch(`/api/movies/${id}`);
       const movie = await response.json();
       setMovie(movie);
     }
-    
+
     getData();
   }, [id]);
-  
+
   return movie;
 }
 ```
@@ -124,15 +130,17 @@ function useFetchMovie(id) {
 import React, { useState } from 'react';
 import useFetchMovie from './useFetchMovie';
 
-const withFetchMovie = hocify(props => {
+const useHocify = (props) => (props) => {
   const movie = useFetchMovie(props.id);
   return { movie };
-});
+};
+
+const withFetchMovie = hocify(useHocify);
 
 class MyComponent extends React.Component {
   render() {
     const { movie } = this.props;
-    
+
     // ...
   }
 }

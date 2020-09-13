@@ -1,24 +1,37 @@
 import React, { useState, useEffect, useCallback, createRef } from 'react';
 import { act, create } from 'react-test-renderer';
-import hocify from './hocify';
+import hocify from './';
+
+function createDeferredPromise() {
+  let resolve;
+  let reject;
+
+  const promise = new Promise((thisResolve, thisReject) => {
+    resolve = thisResolve;
+    reject = thisReject;
+  });
+
+  return Object.assign(promise, { resolve, reject });
+}
 
 it('takes in a function that takes in a hook. the arguments of the hook are the props of the resulting HOC', async () => {
-  const done = new DeferredPromise();
+  const done = createDeferredPromise();
   const effectHandler = jest.fn();
 
   function useCounter(initialCount) {
     const [count, setCount] = useState(initialCount);
 
-    const inc = useCallback(() => setCount(count => count + 1), []);
-    const dec = useCallback(() => setCount(count => count - 1), []);
+    const inc = useCallback(() => setCount((count) => count + 1), []);
+    const dec = useCallback(() => setCount((count) => count - 1), []);
 
     return { count, inc, dec };
   }
 
-  const withCounter = hocify(props => useCounter(props.initCount));
+  const withCounter = hocify((props) => useCounter(props.initCount));
 
   function SomeComponent(props) {
     const { inc, count } = props;
+
     useEffect(() => {
       inc();
     }, [inc]);
@@ -45,7 +58,8 @@ it('takes in a function that takes in a hook. the arguments of the hook are the 
 
   expect(effectHandler).toHaveBeenCalled();
 
-  expect(effectHandler.mock.calls.map(args => args[0])).toMatchInlineSnapshot(`
+  expect(effectHandler.mock.calls.map((args) => args[0]))
+    .toMatchInlineSnapshot(`
     Array [
       Object {
         "count": 10,
@@ -65,7 +79,7 @@ it('takes in a function that takes in a hook. the arguments of the hook are the 
 
 it('throws if the hook does not return an object', async () => {
   const errorHandler = jest.fn();
-  const done = new DeferredPromise();
+  const done = createDeferredPromise();
 
   function useExampleHook() {
     return 'not an object';
@@ -106,7 +120,7 @@ it('throws if the hook does not return an object', async () => {
     create(
       <ErrorBoundary>
         <Wrapped />
-      </ErrorBoundary>,
+      </ErrorBoundary>
     );
 
     await done;
@@ -114,7 +128,7 @@ it('throws if the hook does not return an object', async () => {
 
   expect(errorHandler).toHaveBeenCalledTimes(1);
   expect(errorHandler.mock.calls[0][0]).toMatchInlineSnapshot(
-    `[Error: [hocify]: Hook results should return null or an object to be spread as props but received typeof "string"]`,
+    `[Error: [hocify]: Hook results must return null or an object to be spread as props but received typeof "string"]`
   );
 });
 
@@ -141,50 +155,3 @@ it('forwards the ref', async () => {
 
   expect(ref.current).toBeInstanceOf(ExampleComponent);
 });
-
-it('skips the object check in production mode', () => {
-  const nodeEnv = process.env.NODE_ENV;
-  process.env.NODE_ENV = 'production';
-
-  function useExampleHook() {
-    return undefined;
-  }
-
-  const withExampleHook = hocify(useExampleHook);
-
-  class ExampleComponent extends React.Component {
-    render() {
-      return null;
-    }
-  }
-
-  const Wrapped = withExampleHook(ExampleComponent);
-
-  act(() => {
-    create(<Wrapped />);
-  });
-
-  process.env.NODE_ENV = nodeEnv;
-});
-
-class DeferredPromise {
-  constructor() {
-    this.state = 'pending';
-    this._promise = new Promise((resolve, reject) => {
-      this.resolve = value => {
-        this.state = 'fulfilled';
-        resolve(value);
-      };
-      this.reject = reason => {
-        this.state = 'rejected';
-        reject(reason);
-      };
-    });
-
-    this.then = this._promise.then.bind(this._promise);
-    this.catch = this._promise.catch.bind(this._promise);
-    this.finally = this._promise.finally.bind(this._promise);
-  }
-
-  [Symbol.toStringTag] = 'Promise';
-}

@@ -1,5 +1,6 @@
+import React from 'react';
 // this file exists solely to test the typings of this library
-import hocify from './hocify';
+import hocify from './';
 
 function useCounter() {
   return {
