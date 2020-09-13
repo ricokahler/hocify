@@ -38,7 +38,7 @@ import useMyCustomHook from './useMyCustomHook';
 // 1) create a custom hook to feed into HOCify.
 // note: it's nice to have this top-level for the hooks linter to work correctly
 // `props` are the incoming props of the resulting component
-const useHocify = props => {
+const useHocify = (props) => {
   const result = useMyCustomHook(props.inputValue);
 
   // 3) the resulting hook _must_ return an object OR `null`.
@@ -75,7 +75,7 @@ export default ParentComponent;
 
 ### Using two or more hooks with `hocify`
 
-The following example shows how you can use two hooks with `hocify`. Note that it's better to create a combined custom hook over creatitng multiple HOCs.
+The following example shows how you can use two hooks with `hocify`. Note that it's better to create a combined custom hook over creating multiple HOCs.
 
 ```js
 import React from 'react';
@@ -83,12 +83,15 @@ import hocify from 'hocify';
 import useHookOne from './useHookOne';
 import useHookTwo from './useHookTwo';
 
-const withHooks = hocify(() => {
+const useHocify = () => {
   const one = useHookOne();
   const two = useHookTwo();
 
   return { one, two };
-});
+};
+
+// only create one HOC
+const withHooks = hocify(useHocify);
 
 class ClassComponent extends React.Component {
   // ...
@@ -127,10 +130,12 @@ function useFetchMovie(id) {
 import React, { useState } from 'react';
 import useFetchMovie from './useFetchMovie';
 
-const withFetchMovie = hocify(props => {
+const useHocify = (props) => (props) => {
   const movie = useFetchMovie(props.id);
   return { movie };
-});
+};
+
+const withFetchMovie = hocify(useHocify);
 
 class MyComponent extends React.Component {
   render() {
