@@ -1,4 +1,4 @@
-# HOCify · [![codecov](https://codecov.io/gh/ricokahler/hocify/branch/master/graph/badge.svg)](https://codecov.io/gh/ricokahler/hocify) [![bundlephobia](https://badgen.net/bundlephobia/minzip/hocify)](https://bundlephobia.com/result?p=hocify)
+# HOCify · [![codecov](https://codecov.io/gh/ricokahler/hocify/branch/master/graph/badge.svg)](https://codecov.io/gh/ricokahler/hocify) [![bundlephobia](https://badgen.net/bundlephobia/minzip/hocify)](https://bundlephobia.com/result?p=hocify) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 > HOCify (H-oh-see-ify) is a simple library that converts hooks to [HOCs](https://reactjs.org/docs/higher-order-components.html) for compatibility with class-based components.
 

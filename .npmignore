@@ -1,0 +1,16 @@
+.github
+.vscode
+node_modules
+scripts
+.babelrc
+.eslintrc
+.gitignore
+.prettierrc
+index.js
+index.test.js
+index.types-test.tsx
+jest.config.js
+package-lock.json
+renovate.json
+tsconfig.json
+.releaserc.json

@@ -1,1 +1,4 @@
-{ "extends": "react-app" }
+{
+  "extends": "react-app",
+  "ignorePatterns": ["dist/**/", "**/*test.*"]
+}
