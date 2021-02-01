@@ -3,7 +3,6 @@
   "version": "1.1.0",
   "description": "A function that turns React hooks into HOCs for compatibility with class components",
   "sideEffects": false,
-  "exports": "./dist/index.modern.js",
   "main": "./dist/index.js",
   "unpkg": "./dist/index.umd.js",
   "module": "./dist/index.module.js",
