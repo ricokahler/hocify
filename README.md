@@ -130,7 +130,7 @@ function useFetchMovie(id) {
 import React, { useState } from 'react';
 import useFetchMovie from './useFetchMovie';
 
-const useHocify = (props) => (props) => {
+const useHocify = (props) => {
   const movie = useFetchMovie(props.id);
   return { movie };
 };
