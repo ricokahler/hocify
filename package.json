@@ -30,7 +30,7 @@
   "homepage": "https://github.com/ricokahler/hocify#readme",
   "devDependencies": {
     "@types/jest": "26.0.23",
-    "@types/react": "17.0.11",
+    "@types/react": "17.0.13",
     "@types/react-test-renderer": "17.0.1",
     "@typescript-eslint/eslint-plugin": "4.28.1",
     "@typescript-eslint/parser": "4.28.1",
