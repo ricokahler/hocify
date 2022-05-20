@@ -7,6 +7,7 @@ scripts
 .gitignore
 .prettierrc
 index.js
+!dist/index.js
 index.test.js
 index.types-test.tsx
 jest.config.js
